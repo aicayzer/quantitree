@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  webapp:
+    # line below fixes docker bug - see https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - "5000:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
