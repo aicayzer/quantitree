@@ -1,37 +1,97 @@
-import React, { Component } from "react";
+import React from "react";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+//Styles
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import styled from "styled-components";
 
-class Home extends Component {
-  state = { journey: "" };
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(this.state);
+const StyledLocationSuggestions = styled.div`
+  background-color: #fff;
+  padding: 12px 16px;
+  &:hover {
+    background-color: #3f51b5;
+    cursor: pointer;
+    color: #fff;
+  }
+`;
+
+const StyledLocationList = styled.div`
+  min-width: 250px;
+  max-width: 250px;
+  width: 50%;
+  margin: 0 auto;
+`;
+
+const StyledLocationInputField = styled(TextField)`
+  width: 250px;
+`;
+
+class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      startingAddress: "",
+      startingLatitude: "",
+      startingLongitude: "",
+    };
+  }
+
+  handleChange = (startingAddress) => {
+    this.setState({ startingAddress });
   };
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+
+  handleSelect = (address) => {
+    geocodeByAddress(address)
+      .then((results) => getLatLng(results[0]))
+      // .then((latLng) => console.log("Success", latLng))
+      .then((latLng) =>
+        this.setState({
+          startingLatitude: latLng.lat,
+          startingLongitude: latLng.lng,
+        }),
+      )
+      // .then((latLng) => this.setState({ longitude: latLng.lng }))
+      .catch((error) => console.error("Error", error));
   };
 
   render() {
     return (
-      <div>
-        <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
-          <h1>how many trees is my journey?</h1>
-          <TextField
-            id="outlined-basic"
-            label="journey"
-            variant="outlined"
-            name="journey"
-            onChange={this.handleChange}
-          />
-          <br />
-          <Button variant="contained" color="primary" type="submit">
-            Submit
-          </Button>
-        </form>
-      </div>
+      <PlacesAutocomplete
+        value={this.state.startingAddress}
+        onChange={this.handleChange}
+        onSelect={this.handleSelect}
+      >
+        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+          <div>
+            <StyledLocationInputField
+              id="standard-basic"
+              label="Start Location"
+              variant="outlined"
+              {...getInputProps({
+                placeholder: "Search Places ...",
+                className: "location-search-input",
+              })}
+            />
+            <StyledLocationList>
+              {loading && <div>Loading...</div>}
+              {suggestions.map((suggestion) => {
+                // const className = suggestion.active
+                //   ? "suggestion-item--active"
+                //   : "suggestion-item";
+                return (
+                  <StyledLocationSuggestions
+                    {...getSuggestionItemProps(suggestion)}
+                  >
+                    <span>{suggestion.description}</span>
+                  </StyledLocationSuggestions>
+                );
+              })}
+            </StyledLocationList>
+          </div>
+        )}
+      </PlacesAutocomplete>
     );
   }
 }
