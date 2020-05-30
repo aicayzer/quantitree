@@ -28,6 +28,10 @@ const StyledLocationInputField = styled(TextField)`
   width: 250px;
 `;
 
+const StyledLocationInputDiv = styled.div`
+  margin: 15px;
+`;
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -35,63 +39,141 @@ class Home extends React.Component {
       startingAddress: "",
       startingLatitude: "",
       startingLongitude: "",
+      destinationAddress: "",
+      destinationLatitude: "",
+      destinationLongitude: "",
+      milesPerGalon: "",
     };
   }
 
-  handleChange = (startingAddress) => {
-    this.setState({ startingAddress });
+  handleChange = (address) => {
+    this.setState({ startingAddress: address });
+  };
+  handleChangeTWO = (destinationAddress) => {
+    this.setState({ destinationAddress });
   };
 
-  handleSelect = (address) => {
+  handleSelectStartingAddress = (address) => {
     geocodeByAddress(address)
       .then((results) => getLatLng(results[0]))
       // .then((latLng) => console.log("Success", latLng))
       .then((latLng) =>
         this.setState({
+          startingAddress: address,
           startingLatitude: latLng.lat,
           startingLongitude: latLng.lng,
         }),
       )
-      // .then((latLng) => this.setState({ longitude: latLng.lng }))
+
+      .catch((error) => console.error("Error", error));
+  };
+
+  handleSelectDestinationAddress = (address) => {
+    geocodeByAddress(address)
+      .then((results) => getLatLng(results[0]))
+      .then((latLng) =>
+        this.setState({
+          destinationAddress: address,
+          destinationLatitude: latLng.lat,
+          destinationLongitude: latLng.lng,
+        }),
+      )
+      // .then((latLng) => {
+      //   if ([address.target.name] === "startingAddress") {
+      //     this.setState({
+      //       startingLatitude: latLng.lat,
+      //       startingLongitude: latLng.lng,
+      //     });
+      //   } else if ([address.target.name] === "destinationAddress") {
+      //     this.setState({
+      //       destinationLatitude: latLng.lat,
+      //       destinationLongitude: latLng.lng,
+      //     });
+      //   }
+      // })
       .catch((error) => console.error("Error", error));
   };
 
   render() {
     return (
-      <PlacesAutocomplete
-        value={this.state.startingAddress}
-        onChange={this.handleChange}
-        onSelect={this.handleSelect}
-      >
-        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div>
-            <StyledLocationInputField
-              id="standard-basic"
-              label="Start Location"
-              variant="outlined"
-              {...getInputProps({
-                placeholder: "Search Places ...",
-                className: "location-search-input",
-              })}
-            />
-            <StyledLocationList>
-              {loading && <div>Loading...</div>}
-              {suggestions.map((suggestion) => {
-                // const className = suggestion.active
-                //   ? "suggestion-item--active"
-                //   : "suggestion-item";
-                return (
-                  <StyledLocationSuggestions
-                    {...getSuggestionItemProps(suggestion)}
-                  >
-                    <span>{suggestion.description}</span>
-                  </StyledLocationSuggestions>
-                );
-              })}
-            </StyledLocationList>
-          </div>
-        )}
-      </PlacesAutocomplete>
+      <div>
+        <form>
+          <PlacesAutocomplete
+            value={this.state.startingAddress}
+            onChange={this.handleChange}
+            onSelect={this.handleSelectStartingAddress}
+            name="startingAddress"
+          >
+            {({
+              getInputProps,
+              suggestions,
+              getSuggestionItemProps,
+              loading,
+            }) => (
+              <StyledLocationInputDiv>
+                <StyledLocationInputField
+                  id="standard-basic"
+                  label="Start Location"
+                  variant="outlined"
+                  {...getInputProps({
+                    placeholder: "Search Places ...",
+                    className: "location-search-input",
+                  })}
+                />
+                <StyledLocationList>
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion) => {
+                    return (
+                      <StyledLocationSuggestions
+                        {...getSuggestionItemProps(suggestion)}
+                      >
+                        <span>{suggestion.description}</span>
+                      </StyledLocationSuggestions>
+                    );
+                  })}
+                </StyledLocationList>
+              </StyledLocationInputDiv>
+            )}
+          </PlacesAutocomplete>
+          <PlacesAutocomplete
+            value={this.state.destinationAddress}
+            onChange={this.handleChangeTWO}
+            onSelect={this.handleSelectDestinationAddress}
+            name="destinationAddress"
+          >
+            {({
+              getInputProps,
+              suggestions,
+              getSuggestionItemProps,
+              loading,
+            }) => (
+              <div>
+                <StyledLocationInputField
+                  id="standard-basic"
+                  label="Destination"
+                  variant="outlined"
+                  {...getInputProps({
+                    placeholder: "Search Places ...",
+                    className: "location-search-input",
+                  })}
+                />
+                <StyledLocationList>
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion) => {
+                    return (
+                      <StyledLocationSuggestions
+                        {...getSuggestionItemProps(suggestion)}
+                      >
+                        <span>{suggestion.description}</span>
+                      </StyledLocationSuggestions>
+                    );
+                  })}
+                </StyledLocationList>
+              </div>
+            )}
+          </PlacesAutocomplete>
+        </form>
+      </div>
     );
   }
 }
