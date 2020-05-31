@@ -209,12 +209,12 @@ class Home extends React.Component {
           <Grid item xs />
           <Grid item xs>
             <DisplayBox>
-              <HeadingText>Carbon Calculator!</HeadingText>
+              <HeadingText>Quantitree Calculator!</HeadingText>
               <SmallerHeadingText>
                 Ever wondered how much carbon you burn when you drive somewhere?
-                Well we have and so we created this very basic calculator to
-                help you gain some perspective. Enter you starting and ending
-                location below and press submit to have a try!
+                Well we at Quantitree have and so we created this very basic
+                calculator to help you gain some perspective. Enter you starting
+                and ending location below and press submit to have a try!
               </SmallerHeadingText>
               <form onSubmit={this.handleSubmit}>
                 <PlacesAutocomplete
@@ -232,7 +232,7 @@ class Home extends React.Component {
                     <StyledInputDiv>
                       <StyledLocationInputField
                         id="standard-basic"
-                        label="Start Location"
+                        label="Start"
                         variant="outlined"
                         {...getInputProps({
                           placeholder: "Search Places ...",
