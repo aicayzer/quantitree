@@ -13,6 +13,7 @@ import TextField from "@material-ui/core/TextField";
 // import InputLabel from "@material-ui/core/InputLabel";
 // import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
+import "typeface-roboto";
 
 const StyledLocationSuggestions = styled.div`
   background-color: #fff;
@@ -25,14 +26,40 @@ const StyledLocationSuggestions = styled.div`
 `;
 
 const StyledLocationList = styled.div`
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 350px;
+  max-width: 350px;
   width: 50%;
   margin: 0 auto;
 `;
 
+const DisplayBox = styled.div`
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+`;
+
+const Screen = styled.div``;
+
 const StyledLocationInputField = styled(TextField)`
-  width: 250px;
+  width: 350px;
+  label.focused {
+    color: #3f51b5;
+  }
+  .MuiOutlinedInput-root {
+    fieldset {
+      border: 2px solid #3f51b5;
+    }
+    &:hover fieldset {
+      border-color: #3f51b5;
+    }
+    &.Mui-focused fieldset {
+      border-color: #3f51b5;
+      color: #3f51b5;
+    }
+  }
 `;
 
 const StyledInputDiv = styled.div`
@@ -44,6 +71,36 @@ const StyledInputDiv = styled.div`
 //   margin: 15px;
 // `;
 
+const ResponseText = styled.h2`
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 1.3rem;
+  width: 50%;
+  margin: 0 auto;
+  color: #3f51b5;
+  margin-top: 15px;
+`;
+
+const HeadingText = styled.h1`
+  font-family: Roboto;
+  font-weight: 600;
+  font-size: 2rem;
+  width: 500px;
+  width: 50%;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  color: #3f51b5;
+`;
+
+const SmallerHeadingText = styled.h3`
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 1rem;
+  width: 400px;
+  width: 50%;
+  margin: 0 auto;
+  color: #3f51b5;
+`;
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -57,11 +114,13 @@ class Home extends React.Component {
       // milesPergallon: "",
       distnaceInMeters: null,
       treeTime: "",
+      treeFailure: " ",
     };
   }
 
   //add errors
   handleSubmit = (e) => {
+    this.setState({ treeTime: null });
     const {
       startingLatitude,
       startingLongitude,
@@ -82,9 +141,12 @@ class Home extends React.Component {
       })
       // console.log(this.state.responseContents);
       // destination.rows[0]["elements"][0].distance.value
-      .catch(() =>
-        console.log("Can’t access " + url + " response. Blocked by browser?"),
-      );
+      .catch(() => {
+        console.log("Can’t access " + url + " response. Blocked by browser?");
+        const responseFail =
+          "I'm struggling to calculate that, try a different journey";
+        this.setState({ treeFailure: responseFail });
+      });
   };
   handleChangeStartingAddress = (address) => {
     this.setState({ startingAddress: address });
@@ -139,83 +201,91 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <PlacesAutocomplete
-            value={this.state.startingAddress}
-            onChange={this.handleChangeStartingAddress}
-            onSelect={this.handleSelectStartingAddress}
-            name="startingAddress"
-          >
-            {({
-              getInputProps,
-              suggestions,
-              getSuggestionItemProps,
-              loading,
-            }) => (
-              <StyledInputDiv>
-                <StyledLocationInputField
-                  id="standard-basic"
-                  label="Start Location"
-                  variant="outlined"
-                  {...getInputProps({
-                    placeholder: "Search Places ...",
-                    className: "location-search-input",
-                  })}
-                />
-                <StyledLocationList>
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
-                    return (
-                      <StyledLocationSuggestions
-                        {...getSuggestionItemProps(suggestion)}
-                      >
-                        <span>{suggestion.description}</span>
-                      </StyledLocationSuggestions>
-                    );
-                  })}
-                </StyledLocationList>
-              </StyledInputDiv>
-            )}
-          </PlacesAutocomplete>
-          <PlacesAutocomplete
-            value={this.state.destinationAddress}
-            onChange={this.handleChangeDestinationAddress}
-            onSelect={this.handleSelectDestinationAddress}
-            name="destinationAddress"
-          >
-            {({
-              getInputProps,
-              suggestions,
-              getSuggestionItemProps,
-              loading,
-            }) => (
-              <StyledInputDiv>
-                <StyledLocationInputField
-                  id="standard-basic"
-                  label="Destination"
-                  variant="outlined"
-                  {...getInputProps({
-                    placeholder: "Search Places ...",
-                    className: "location-search-input",
-                  })}
-                />
-                <StyledLocationList>
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
-                    return (
-                      <StyledLocationSuggestions
-                        {...getSuggestionItemProps(suggestion)}
-                      >
-                        <span>{suggestion.description}</span>
-                      </StyledLocationSuggestions>
-                    );
-                  })}
-                </StyledLocationList>
-              </StyledInputDiv>
-            )}
-          </PlacesAutocomplete>
-          {/* <StyledInputDiv>
+      <Screen>
+        <DisplayBox>
+          <HeadingText>Carbon Calculator!</HeadingText>
+          <SmallerHeadingText>
+            Ever wondered how much carbon you burn when you drive somewhere?
+            Well we have and so we created this very basic calculator to help
+            you gain some perspective. Enter you starting and ending location
+            below and press submit to have a try!
+          </SmallerHeadingText>
+          <form onSubmit={this.handleSubmit}>
+            <PlacesAutocomplete
+              value={this.state.startingAddress}
+              onChange={this.handleChangeStartingAddress}
+              onSelect={this.handleSelectStartingAddress}
+              name="startingAddress"
+            >
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading,
+              }) => (
+                <StyledInputDiv>
+                  <StyledLocationInputField
+                    id="standard-basic"
+                    label="Start Location"
+                    variant="outlined"
+                    {...getInputProps({
+                      placeholder: "Search Places ...",
+                      className: "location-search-input",
+                    })}
+                  />
+                  <StyledLocationList>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map((suggestion) => {
+                      return (
+                        <StyledLocationSuggestions
+                          {...getSuggestionItemProps(suggestion)}
+                        >
+                          <span>{suggestion.description}</span>
+                        </StyledLocationSuggestions>
+                      );
+                    })}
+                  </StyledLocationList>
+                </StyledInputDiv>
+              )}
+            </PlacesAutocomplete>
+            <PlacesAutocomplete
+              value={this.state.destinationAddress}
+              onChange={this.handleChangeDestinationAddress}
+              onSelect={this.handleSelectDestinationAddress}
+              name="destinationAddress"
+            >
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading,
+              }) => (
+                <StyledInputDiv>
+                  <StyledLocationInputField
+                    id="standard-basic"
+                    label="Destination"
+                    variant="outlined"
+                    {...getInputProps({
+                      placeholder: "Search Places ...",
+                      className: "location-search-input",
+                    })}
+                  />
+                  <StyledLocationList>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map((suggestion) => {
+                      return (
+                        <StyledLocationSuggestions
+                          {...getSuggestionItemProps(suggestion)}
+                        >
+                          <span>{suggestion.description}</span>
+                        </StyledLocationSuggestions>
+                      );
+                    })}
+                  </StyledLocationList>
+                </StyledInputDiv>
+              )}
+            </PlacesAutocomplete>
+            {/* <StyledInputDiv>
             <StyledFormControl variant="outlined">
               <InputLabel>Miles Per gallon UK</InputLabel>
               <Select
@@ -246,16 +316,17 @@ class Home extends React.Component {
               </Select>
             </StyledFormControl>
           </StyledInputDiv> */}
-          <Button variant="contained" type="submit" color="primary">
-            Submit
-          </Button>
-        </form>
-        <h1>
-          {this.state.treeTime
-            ? `that will take the average tree roughly ${this.state.treeTime} days to offset!`
-            : null}
-        </h1>
-      </div>
+            <Button variant="contained" type="submit" color="primary">
+              Submit
+            </Button>
+          </form>
+          <ResponseText>
+            {this.state.treeTime
+              ? `that will take the average tree roughly ${this.state.treeTime} days to offset!`
+              : `${this.state.treeFailure} `}
+          </ResponseText>
+        </DisplayBox>
+      </Screen>
     );
   }
 }
