@@ -3,14 +3,16 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import { googleApiKey } from "../googleApiKey";
 //Styles
 import styled from "styled-components";
 //Material-UI
 import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
+// import FormControl from "@material-ui/core/FormControl";
+// import MenuItem from "@material-ui/core/MenuItem";
+// import InputLabel from "@material-ui/core/InputLabel";
+// import Select from "@material-ui/core/Select";
+import Button from "@material-ui/core/Button";
 
 const StyledLocationSuggestions = styled.div`
   background-color: #fff;
@@ -37,36 +39,61 @@ const StyledInputDiv = styled.div`
   margin: 15px;
 `;
 
-const StyledFormControl = styled(FormControl)`
-  width: 250px;
-  margin: 15px;
-`;
+// const StyledFormControl = styled(FormControl)`
+//   width: 250px;
+//   margin: 15px;
+// `;
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      startingAddress: null,
-      startingLatitude: null,
-      startingLongitude: null,
-      destinationAddress: null,
-      destinationLatitude: null,
-      destinationLongitude: null,
-      milesPerGalon: null,
+      startingAddress: "",
+      startingLatitude: "",
+      startingLongitude: "",
+      destinationAddress: "",
+      destinationLatitude: "",
+      destinationLongitude: "",
+      // milesPergallon: "",
+      distnaceInMeters: null,
+      treeTime: "",
     };
   }
 
-  handleSubmit = () => {
-    if (this.state.startingLatitude == true && this.state.startingLongitude == true && this.state.destinationLatitude == true && this.state.destinationLongitude == true)
-  }
+  //add errors
+  handleSubmit = (e) => {
+    const {
+      startingLatitude,
+      startingLongitude,
+      destinationLatitude,
+      destinationLongitude,
+    } = this.state;
+    e.preventDefault();
+    const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${startingLatitude},${startingLongitude}&destinations=${destinationLatitude},${destinationLongitude}&key=${googleApiKey}`;
+    fetch(proxyurl + url)
+      .then((response) => response.json())
+      .then((contents) => {
+        const distance = contents.rows[0]["elements"][0].distance.value;
+        //carbon emissions per mile 0.000098
+        //22kg offset of tree per year
+        const trees = Math.round(0.000098 * distance * 22);
+        this.setState({ distnaceInMeters: distance, treeTime: trees });
+      })
+      // console.log(this.state.responseContents);
+      // destination.rows[0]["elements"][0].distance.value
+      .catch(() =>
+        console.log("Can’t access " + url + " response. Blocked by browser?"),
+      );
+  };
   handleChangeStartingAddress = (address) => {
     this.setState({ startingAddress: address });
   };
   handleChangeDestinationAddress = (address) => {
     this.setState({ destinationAddress: address });
   };
-  handleChangeMilesPerGalon = (mpg) => {
-    this.setState({ milesPerGalon: [mpg.target.value] });
+  handleChangeMilesPergallon = (mpg) => {
+    this.setState({ milesPergallon: [mpg.target.value] });
   };
 
   handleSelectStartingAddress = (address) => {
@@ -188,13 +215,13 @@ class Home extends React.Component {
               </StyledInputDiv>
             )}
           </PlacesAutocomplete>
-          <StyledInputDiv>
+          {/* <StyledInputDiv>
             <StyledFormControl variant="outlined">
-              <InputLabel>Miles Per Galon</InputLabel>
+              <InputLabel>Miles Per gallon UK</InputLabel>
               <Select
-                value={this.state.milesPerGalon}
-                onChange={this.handleChangeMilesPerGalon}
-                label="Miles Per Galon"
+                value={this.state.milesPergallon}
+                onChange={this.handleChangeMilesPergallon}
+                label="Miles Per gallon"
               >
                 <MenuItem value={1}>1</MenuItem>
                 <MenuItem value={2}>2</MenuItem>
@@ -218,9 +245,16 @@ class Home extends React.Component {
                 <MenuItem value={20}>20</MenuItem>
               </Select>
             </StyledFormControl>
-          </StyledInputDiv>
+          </StyledInputDiv> */}
+          <Button variant="contained" type="submit" color="primary">
+            Submit
+          </Button>
         </form>
-        <h1>{this.state.startingAddress}</h1>
+        <h1>
+          {this.state.treeTime
+            ? `that will take the average tree roughly ${this.state.treeTime} days to offset!`
+            : null}
+        </h1>
       </div>
     );
   }
