@@ -4,8 +4,13 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 //Styles
-import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
+//Material-UI
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
 
 const StyledLocationSuggestions = styled.div`
   background-color: #fff;
@@ -28,7 +33,12 @@ const StyledLocationInputField = styled(TextField)`
   width: 250px;
 `;
 
-const StyledLocationInputDiv = styled.div`
+const StyledInputDiv = styled.div`
+  margin: 15px;
+`;
+
+const StyledFormControl = styled(FormControl)`
+  width: 250px;
   margin: 15px;
 `;
 
@@ -36,21 +46,27 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      startingAddress: "",
-      startingLatitude: "",
-      startingLongitude: "",
-      destinationAddress: "",
-      destinationLatitude: "",
-      destinationLongitude: "",
-      milesPerGalon: "",
+      startingAddress: null,
+      startingLatitude: null,
+      startingLongitude: null,
+      destinationAddress: null,
+      destinationLatitude: null,
+      destinationLongitude: null,
+      milesPerGalon: null,
     };
   }
 
-  handleChange = (address) => {
+  handleSubmit = () => {
+    if (this.state.startingLatitude == true && this.state.startingLongitude == true && this.state.destinationLatitude == true && this.state.destinationLongitude == true)
+  }
+  handleChangeStartingAddress = (address) => {
     this.setState({ startingAddress: address });
   };
-  handleChangeTWO = (destinationAddress) => {
-    this.setState({ destinationAddress });
+  handleChangeDestinationAddress = (address) => {
+    this.setState({ destinationAddress: address });
+  };
+  handleChangeMilesPerGalon = (mpg) => {
+    this.setState({ milesPerGalon: [mpg.target.value] });
   };
 
   handleSelectStartingAddress = (address) => {
@@ -97,10 +113,10 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <PlacesAutocomplete
             value={this.state.startingAddress}
-            onChange={this.handleChange}
+            onChange={this.handleChangeStartingAddress}
             onSelect={this.handleSelectStartingAddress}
             name="startingAddress"
           >
@@ -110,7 +126,7 @@ class Home extends React.Component {
               getSuggestionItemProps,
               loading,
             }) => (
-              <StyledLocationInputDiv>
+              <StyledInputDiv>
                 <StyledLocationInputField
                   id="standard-basic"
                   label="Start Location"
@@ -132,12 +148,12 @@ class Home extends React.Component {
                     );
                   })}
                 </StyledLocationList>
-              </StyledLocationInputDiv>
+              </StyledInputDiv>
             )}
           </PlacesAutocomplete>
           <PlacesAutocomplete
             value={this.state.destinationAddress}
-            onChange={this.handleChangeTWO}
+            onChange={this.handleChangeDestinationAddress}
             onSelect={this.handleSelectDestinationAddress}
             name="destinationAddress"
           >
@@ -147,7 +163,7 @@ class Home extends React.Component {
               getSuggestionItemProps,
               loading,
             }) => (
-              <div>
+              <StyledInputDiv>
                 <StyledLocationInputField
                   id="standard-basic"
                   label="Destination"
@@ -169,10 +185,42 @@ class Home extends React.Component {
                     );
                   })}
                 </StyledLocationList>
-              </div>
+              </StyledInputDiv>
             )}
           </PlacesAutocomplete>
+          <StyledInputDiv>
+            <StyledFormControl variant="outlined">
+              <InputLabel>Miles Per Galon</InputLabel>
+              <Select
+                value={this.state.milesPerGalon}
+                onChange={this.handleChangeMilesPerGalon}
+                label="Miles Per Galon"
+              >
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={7}>7</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+                <MenuItem value={9}>9</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={11}>11</MenuItem>
+                <MenuItem value={12}>12</MenuItem>
+                <MenuItem value={13}>13</MenuItem>
+                <MenuItem value={14}>14</MenuItem>
+                <MenuItem value={15}>15</MenuItem>
+                <MenuItem value={16}>16</MenuItem>
+                <MenuItem value={17}>17</MenuItem>
+                <MenuItem value={18}>18</MenuItem>
+                <MenuItem value={19}>19</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+              </Select>
+            </StyledFormControl>
+          </StyledInputDiv>
         </form>
+        <h1>{this.state.startingAddress}</h1>
       </div>
     );
   }
