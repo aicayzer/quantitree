@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2869bd1bcf52b5bdf6715f72a0062207",
+    "revision": "59e6349dace9c8fecf9b1754d2311ba0",
     "url": "/quantitree/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/quantitree/static/css/2.fd15d2bf.chunk.css"
   },
   {
-    "revision": "97b0c6f5bc7dfc3c8c1c",
+    "revision": "25c098052a2d27cf1286",
     "url": "/quantitree/static/css/main.5f361e03.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/quantitree/static/js/2.9bfd1fc8.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "97b0c6f5bc7dfc3c8c1c",
-    "url": "/quantitree/static/js/main.083adb90.chunk.js"
+    "revision": "25c098052a2d27cf1286",
+    "url": "/quantitree/static/js/main.6f4b4ba3.chunk.js"
   },
   {
     "revision": "02aefe8ab8b7141408d9",
