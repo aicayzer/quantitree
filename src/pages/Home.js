@@ -12,12 +12,14 @@ import TextField from "@material-ui/core/TextField";
 // import MenuItem from "@material-ui/core/MenuItem";
 // import InputLabel from "@material-ui/core/InputLabel";
 // import Select from "@material-ui/core/Select";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import "typeface-roboto";
 
 const StyledLocationSuggestions = styled.div`
   background-color: #fff;
   padding: 12px 16px;
+  color: #3f51b5;
   &:hover {
     background-color: #3f51b5;
     cursor: pointer;
@@ -85,8 +87,8 @@ const HeadingText = styled.h1`
   font-family: Roboto;
   font-weight: 600;
   font-size: 2rem;
-  width: 500px;
-  width: 50%;
+  width: 95%;
+  max-width: 380px;
   margin: 0 auto;
   margin-bottom: 15px;
   color: #3f51b5;
@@ -96,8 +98,8 @@ const SmallerHeadingText = styled.h3`
   font-family: Roboto;
   font-weight: 400;
   font-size: 1rem;
-  width: 400px;
-  width: 50%;
+  width: 95%;
+  max-width: 380px;
   margin: 0 auto;
   color: #3f51b5;
 `;
@@ -137,6 +139,7 @@ class Home extends React.Component {
         //carbon emissions per mile 0.000098
         //22kg offset of tree per year
         const trees = Math.round(0.000098 * distance * 22);
+        //https://www.wired.co.uk/article/trains-planes-emissions-co2-comparison
         this.setState({ distnaceInMeters: distance, treeTime: trees });
       })
       // console.log(this.state.responseContents);
@@ -202,90 +205,101 @@ class Home extends React.Component {
   render() {
     return (
       <Screen>
-        <DisplayBox>
-          <HeadingText>Carbon Calculator!</HeadingText>
-          <SmallerHeadingText>
-            Ever wondered how much carbon you burn when you drive somewhere?
-            Well we have and so we created this very basic calculator to help
-            you gain some perspective. Enter you starting and ending location
-            below and press submit to have a try!
-          </SmallerHeadingText>
-          <form onSubmit={this.handleSubmit}>
-            <PlacesAutocomplete
-              value={this.state.startingAddress}
-              onChange={this.handleChangeStartingAddress}
-              onSelect={this.handleSelectStartingAddress}
-              name="startingAddress"
-            >
-              {({
-                getInputProps,
-                suggestions,
-                getSuggestionItemProps,
-                loading,
-              }) => (
-                <StyledInputDiv>
-                  <StyledLocationInputField
-                    id="standard-basic"
-                    label="Start Location"
-                    variant="outlined"
-                    {...getInputProps({
-                      placeholder: "Search Places ...",
-                      className: "location-search-input",
-                    })}
-                  />
-                  <StyledLocationList>
-                    {loading && <div>Loading...</div>}
-                    {suggestions.map((suggestion) => {
-                      return (
-                        <StyledLocationSuggestions
-                          {...getSuggestionItemProps(suggestion)}
-                        >
-                          <span>{suggestion.description}</span>
-                        </StyledLocationSuggestions>
-                      );
-                    })}
-                  </StyledLocationList>
-                </StyledInputDiv>
-              )}
-            </PlacesAutocomplete>
-            <PlacesAutocomplete
-              value={this.state.destinationAddress}
-              onChange={this.handleChangeDestinationAddress}
-              onSelect={this.handleSelectDestinationAddress}
-              name="destinationAddress"
-            >
-              {({
-                getInputProps,
-                suggestions,
-                getSuggestionItemProps,
-                loading,
-              }) => (
-                <StyledInputDiv>
-                  <StyledLocationInputField
-                    id="standard-basic"
-                    label="Destination"
-                    variant="outlined"
-                    {...getInputProps({
-                      placeholder: "Search Places ...",
-                      className: "location-search-input",
-                    })}
-                  />
-                  <StyledLocationList>
-                    {loading && <div>Loading...</div>}
-                    {suggestions.map((suggestion) => {
-                      return (
-                        <StyledLocationSuggestions
-                          {...getSuggestionItemProps(suggestion)}
-                        >
-                          <span>{suggestion.description}</span>
-                        </StyledLocationSuggestions>
-                      );
-                    })}
-                  </StyledLocationList>
-                </StyledInputDiv>
-              )}
-            </PlacesAutocomplete>
-            {/* <StyledInputDiv>
+        <Grid container spacing={2}>
+          <Grid item xs />
+          <Grid item xs>
+            <DisplayBox>
+              <HeadingText>Carbon Calculator!</HeadingText>
+              <SmallerHeadingText>
+                Ever wondered how much carbon you burn when you drive somewhere?
+                Well we have and so we created this very basic calculator to
+                help you gain some perspective. Enter you starting and ending
+                location below and press submit to have a try!
+              </SmallerHeadingText>
+              <form onSubmit={this.handleSubmit}>
+                <PlacesAutocomplete
+                  value={this.state.startingAddress}
+                  onChange={this.handleChangeStartingAddress}
+                  onSelect={this.handleSelectStartingAddress}
+                  name="startingAddress"
+                >
+                  {({
+                    getInputProps,
+                    suggestions,
+                    getSuggestionItemProps,
+                    loading,
+                  }) => (
+                    <StyledInputDiv>
+                      <StyledLocationInputField
+                        id="standard-basic"
+                        label="Start Location"
+                        variant="outlined"
+                        {...getInputProps({
+                          placeholder: "Search Places ...",
+                          className: "location-search-input",
+                        })}
+                      />
+                      <StyledLocationList>
+                        {loading && (
+                          <StyledLocationSuggestions>
+                            Loading...
+                          </StyledLocationSuggestions>
+                        )}
+                        {suggestions.map((suggestion) => {
+                          return (
+                            <StyledLocationSuggestions
+                              {...getSuggestionItemProps(suggestion)}
+                            >
+                              {suggestion.description}
+                            </StyledLocationSuggestions>
+                          );
+                        })}
+                      </StyledLocationList>
+                    </StyledInputDiv>
+                  )}
+                </PlacesAutocomplete>
+                <PlacesAutocomplete
+                  value={this.state.destinationAddress}
+                  onChange={this.handleChangeDestinationAddress}
+                  onSelect={this.handleSelectDestinationAddress}
+                  name="destinationAddress"
+                >
+                  {({
+                    getInputProps,
+                    suggestions,
+                    getSuggestionItemProps,
+                    loading,
+                  }) => (
+                    <StyledInputDiv>
+                      <StyledLocationInputField
+                        id="standard-basic"
+                        label="Destination"
+                        variant="outlined"
+                        {...getInputProps({
+                          placeholder: "Search Places ...",
+                          className: "location-search-input",
+                        })}
+                      />
+                      <StyledLocationList>
+                        {loading && (
+                          <StyledLocationSuggestions>
+                            Loading...
+                          </StyledLocationSuggestions>
+                        )}
+                        {suggestions.map((suggestion) => {
+                          return (
+                            <StyledLocationSuggestions
+                              {...getSuggestionItemProps(suggestion)}
+                            >
+                              {suggestion.description}
+                            </StyledLocationSuggestions>
+                          );
+                        })}
+                      </StyledLocationList>
+                    </StyledInputDiv>
+                  )}
+                </PlacesAutocomplete>
+                {/* <StyledInputDiv>
             <StyledFormControl variant="outlined">
               <InputLabel>Miles Per gallon UK</InputLabel>
               <Select
@@ -316,16 +330,19 @@ class Home extends React.Component {
               </Select>
             </StyledFormControl>
           </StyledInputDiv> */}
-            <Button variant="contained" type="submit" color="primary">
-              Submit
-            </Button>
-          </form>
-          <ResponseText>
-            {this.state.treeTime
-              ? `that will take the average tree roughly ${this.state.treeTime} days to offset!`
-              : `${this.state.treeFailure} `}
-          </ResponseText>
-        </DisplayBox>
+                <Button variant="contained" type="submit" color="primary">
+                  Submit
+                </Button>
+              </form>
+              <ResponseText>
+                {this.state.treeTime
+                  ? `that will take the average tree roughly ${this.state.treeTime} days to offset!`
+                  : `${this.state.treeFailure} `}
+              </ResponseText>
+            </DisplayBox>
+          </Grid>
+          <Grid item xs />
+        </Grid>
       </Screen>
     );
   }
