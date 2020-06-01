@@ -4,6 +4,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import { googleApiKey } from "../googleApiKey";
+import { Helmet } from "react-helmet";
 //Material-UI
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -128,6 +129,15 @@ class Home extends React.Component {
   render() {
     return (
       <Screen>
+        <Helmet>
+          <title>
+            Quantitree Calculator - Calculate your cars carbon footprint
+          </title>
+          <meta
+            name="description"
+            content="Calculate your cars carbon footprint using the quantitree calculator"
+          />
+        </Helmet>
         <Grid container spacing={2}>
           <Grid item xs />
           <Grid item xs>
@@ -135,7 +145,7 @@ class Home extends React.Component {
               <HeadingText>Quantitree Calculator!</HeadingText>
               <SmallerHeadingText>
                 Ever wondered how much carbon you burn when you drive somewhere?
-                Well we at Quantitree have and so we created this very basic
+                Well Quantitree have and so we created this very basic
                 calculator to help you gain some perspective. Enter you starting
                 and ending location below and press submit to have a try!
               </SmallerHeadingText>
